@@ -1,8 +1,8 @@
 import cv2
-from classes.object_detector import ObjectDetector
+from services.face_detector import FaceDetector
 
 def main():
-    object_detector = ObjectDetector()
+    face_detector = FaceDetector()
     cv2.namedWindow("preview")
     vc = cv2.VideoCapture(0)
 
@@ -13,7 +13,7 @@ def main():
 
     while rval:
         #cv2.imshow("preview", frame)
-        object_detector.detect(frame)
+        face_detector.detect(frame)
         rval, frame = vc.read()
         key = cv2.waitKey(20)
         if key == 27: # exit on ESC
