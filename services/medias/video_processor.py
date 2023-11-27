@@ -19,4 +19,4 @@ class VideoProcessor(MediaProcessor):
                 person = self.person_manager.persons[personDTO.id]
                 for face in person.faces:
                     self.video.frames[face.frame_index] = ImageEditor.blur(self.video.frames[face.frame_index], face.bounding_box)
-        return self.video
+        return self.video.merge(self.video.frames)
