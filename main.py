@@ -1,23 +1,11 @@
-import cv2
-from services.face_detector import FaceDetector
+import gradio as gr
+from interfaces.image_interface import ImageInterface
+from interfaces.video_interface import VideoInterface
 
-def main():
-    face_detector = FaceDetector()
-    cv2.namedWindow("preview")
-    vc = cv2.VideoCapture(0)
+image_tab = ImageInterface().image_tab
+video_tab = VideoInterface().video_tab
 
-    if vc.isOpened(): # try to get the first frame
-        rval, frame = vc.read()
-    else:
-        rval = False
-
-    while rval:
-        #cv2.imshow("preview", frame)
-        face_detector.detect(frame)
-        rval, frame = vc.read()
-        key = cv2.waitKey(20)
-        if key == 27: # exit on ESC
-            break
+iface = gr.TabbedInterface([image_tab, video_tab], ["Image", "Video"])
 
 if __name__ == "__main__":
-    main()
+    iface.launch()
