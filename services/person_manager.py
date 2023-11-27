@@ -28,7 +28,7 @@ class PersonManager():
                     person.faces.append(face)
                     return
             self.persons.append(Person(len(self.persons), face, cropped_face))
-    
+
     def get_persons(self):
         output_persons: list[PersonDTO] = []
         for person in self.persons:

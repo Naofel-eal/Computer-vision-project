@@ -14,7 +14,7 @@ class ImageEditor:
         return result
     
     @staticmethod
-    def blur(frame: ndarray, bounding_box: BoundingBox, blur_lvl: int) -> ndarray:
+    def blur(frame: ndarray, bounding_box: BoundingBox, blur_lvl: int = 45) -> ndarray:
         bounding_box_sizes = bounding_box.upper_left - bounding_box.bottom_right
         width = bounding_box_sizes[0]
         height = bounding_box_sizes[1]
