@@ -5,7 +5,7 @@ from models.person import Person
 from services.face_detector import FaceDetector
 from numpy import ndarray
 from services.image_editor import ImageEditor
-from face_recognition import compare_faces, face_encodings
+import face_recognition 
 
 class PersonManager():
     def __init__(self) -> None:
@@ -20,7 +20,7 @@ class PersonManager():
     
     def save_face(self, frame: ndarray, face: Face) -> None:
         cropped_face: ndarray = ImageEditor.crop(frame, face.bounding_box)
-        if len(self.persons) == 0:
+        if self.is_persons_empty():
             self.persons.append(Person(0, face, cropped_face))
         else:
             for person in self.persons:
@@ -36,6 +36,9 @@ class PersonManager():
         return output_persons
     
     def is_same_person(self, target_face: ndarray, known_face: ndarray) -> bool:
-        target_face_encoding: ndarray = face_encodings(target_face)[0]
-        known_face_encoding: ndarray = face_encodings(known_face)[0]
-        return compare_faces([known_face_encoding], target_face_encoding)[0]
+        known_face_encoding: ndarray = face_recognition.face_encodings(known_face)[0]
+        target_face_encoding: ndarray = face_recognition.face_encodings(target_face)[0]
+        return face_recognition.compare_faces([known_face_encoding], target_face_encoding)[0]
+    
+    def is_persons_empty(self) -> bool:
+        return len(self.persons) == 0

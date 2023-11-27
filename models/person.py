@@ -15,3 +15,5 @@ class Person:
     def get_bounding_boxes(self) -> list[BoundingBox]:
         return [face.bounding_box for face in self.faces]
     
+    def __str__(self) -> str:
+        return f"Person n°{self.id} has {len(self.faces)} faces"

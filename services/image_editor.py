@@ -1,5 +1,5 @@
 from models.bounding_box import BoundingBox
-from numpy import ndarray
+from numpy import ndarray, ascontiguousarray
 import cv2
 
 class ImageEditor:
@@ -10,7 +10,8 @@ class ImageEditor:
         y2 = bounding_box.bottom_right.y
         x1 = bounding_box.upper_left.x
         x2 = bounding_box.bottom_right.x
-        return frame[y1:y2, x1:x2]
+        result = ascontiguousarray(frame[y1:y2, x1:x2])
+        return result
     
     @staticmethod
     def blur(frame: ndarray, bounding_box: BoundingBox, blur_lvl: int) -> ndarray:

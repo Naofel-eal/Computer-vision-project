@@ -6,3 +6,5 @@ class BoundingBox:
         self.upper_left: Point = upper_left
         self.bottom_right: Point = bottom_right
     
+    def __str__(self) -> str:
+        return f"({self.upper_left}, {self.bottom_right})"
