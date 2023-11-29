@@ -8,7 +8,6 @@ from services.face_detector import FaceDetector
 from services.face_comparator import FaceComparator
 from services.image_editor import ImageEditor
 from numpy import ndarray
-# from matplotlib import pyplot as plt
 
 class PersonManager():
     def __init__(self) -> None:

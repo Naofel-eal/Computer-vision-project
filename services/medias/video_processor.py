@@ -3,6 +3,7 @@ from models.comparison import Comparison
 from models.medias.video import Video
 from services.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
+from utils.performance_counter import PerformanceCounter
 from matplotlib import pyplot as plt
 from moviepy.editor import ImageSequenceClip
 
@@ -10,13 +11,19 @@ class VideoProcessor(MediaProcessor):
     def __init__(self, video: Video) -> None:
         super().__init__()
         self.video = video
+        self.performance_counter = PerformanceCounter()
 
     def get_persons(self) -> list[PersonDTO]:
+        self._analyze()        
+        self._correction()
+        return self.person_manager.get_persons()
+
+    def _analyze(self) -> None:
+        self.performance_counter.start("Analyzing time:")
         for index, frame in enumerate(self.video.frames):
             print(f"Processing frame {index}/{len(self.video.frames)}...")
             self.person_manager.analyze(index, frame)
-        self.correction()
-        return self.person_manager.get_persons()
+        self.performance_counter.stop()
 
     def blur_faces(self, personsDTO: list[PersonDTO]) -> ImageSequenceClip:
         for personDTO in personsDTO:
@@ -26,7 +33,8 @@ class VideoProcessor(MediaProcessor):
                     self.video.frames[face.frame_index] = ImageEditor.blur(self.video.frames[face.frame_index], face.prediction.bounding_box)
         return self.video.merge(self.video.frames)
     
-    def correction(self) -> None:
+    def _correction(self) -> None:
+        self.performance_counter.start("Correction time:")
         print("Correction")
         for current_person in self.person_manager.persons:
             for current_face in current_person.faces:
@@ -54,3 +62,4 @@ class VideoProcessor(MediaProcessor):
                             other_person.faces.append(current_face)
                             current_person.faces.remove(current_face)
                             break
+        self.performance_counter.stop()
