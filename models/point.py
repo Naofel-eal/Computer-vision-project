@@ -8,3 +8,6 @@ class Point:
         width = abs(self.x - P2.x)
         height = abs(self.y - P2.y)
         return (width, height)
+
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"

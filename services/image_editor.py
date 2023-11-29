@@ -6,10 +6,10 @@ class ImageEditor:
     
     @staticmethod
     def crop(frame: ndarray, bounding_box: BoundingBox) -> ndarray:
-        y1 = bounding_box.upper_left.y - 50
-        y2 = bounding_box.bottom_right.y + 50
-        x1 = bounding_box.upper_left.x - 50
-        x2 = bounding_box.bottom_right.x + 50
+        y1 = bounding_box.upper_left.y #- 50
+        y2 = bounding_box.bottom_right.y #+ 50
+        x1 = bounding_box.upper_left.x #- 50
+        x2 = bounding_box.bottom_right.x #+ 50
         result = ascontiguousarray(frame[y1:y2, x1:x2])
         return result
     
