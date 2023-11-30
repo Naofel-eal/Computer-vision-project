@@ -5,7 +5,7 @@ from services.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
 from utils.performance_counter import PerformanceCounter
 from matplotlib import pyplot as plt
-from moviepy.editor import ImageSequenceClip
+from cv2 import VideoWriter, VideoWriter_fourcc
 
 class VideoProcessor(MediaProcessor):
     def __init__(self, video: Video) -> None:
@@ -20,28 +20,23 @@ class VideoProcessor(MediaProcessor):
 
     def _analyze(self) -> None:
         self.performance_counter.start("Analyzing time:")
-        for index, frame in enumerate(self.video.frames):
-            print(f"Processing frame {index}/{len(self.video.frames)}...")
+        index = 0
+        frame = self.video.get_next_frame()
+        while frame is not None:
+            print(f"Processing frame {index}...")
             self.person_manager.analyze(index, frame)
+            frame = self.video.get_next_frame()
+            index += 1
         self.performance_counter.stop()
 
-    def blur_faces(self, personsDTO: list[PersonDTO]) -> ImageSequenceClip:
-        for personDTO in personsDTO:
-            if personDTO.should_be_blur:
-                person = self.person_manager.persons[personDTO.id]
-                for face in person.faces:
-                    self.video.frames[face.frame_index] = ImageEditor.blur(self.video.frames[face.frame_index], face.prediction.bounding_box)
-        return self.video.merge(self.video.frames)
-    
     def _correction(self) -> None:
         self.performance_counter.start("Correction time:")
         print("Correction")
         for current_person in self.person_manager.persons:
             for current_face in current_person.faces:
-                print(f"Correction face {current_face.frame_index}/{len(self.video.frames)} for person {current_person.id + 1}/{len(self.person_manager.persons)}")
                 for other_person in self.person_manager.persons:
                     if current_person != other_person:
-                        current_cropped_face = ImageEditor.crop(self.video.frames[current_face.frame_index], current_face.prediction.bounding_box)
+                        current_cropped_face = ImageEditor.crop(self.video.get_nth_frame(current_face.frame_index), current_face.prediction.bounding_box)
                         comparison: Comparison = self.person_manager.compare(current_cropped_face, other_person.cropped_face)
                         current_face_distance = current_face.distance
                         other_person_distance = comparison.distance
@@ -63,3 +58,30 @@ class VideoProcessor(MediaProcessor):
                             current_person.faces.remove(current_face)
                             break
         self.performance_counter.stop()
+
+    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "output.mp4") -> None:
+        fourcc = VideoWriter_fourcc(*'MP4V')
+        frame_index = 0
+        frame = self.video.get_nth_frame(frame_index)
+        shape = frame.shape
+        out = VideoWriter(output_video_path, fourcc, self.video.fps, (shape[1], shape[0]))
+
+        persons_id_to_blur: list[int] = []
+        for personDTO in personsDTO:
+            if personDTO.should_be_blur:
+                persons_id_to_blur.append(personDTO.id)
+
+        while frame is not None:
+            print(f"Saving frame {frame_index}")
+            persons_in_this_frame: list[int] = self.person_manager.get_persons_id_in_frame(frame_index)
+            for person_id in persons_in_this_frame:
+                if person_id in persons_id_to_blur:
+                    person = self.person_manager.persons[person_id]
+                    frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box)
+            
+            frame = ImageEditor.RGB_to_BGR(frame)
+            out.write(frame)
+            frame = self.video.get_next_frame()
+            frame_index += 1
+
+        out.release()

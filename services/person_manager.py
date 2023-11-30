@@ -50,3 +50,12 @@ class PersonManager():
         for person in self.persons:
             output_persons.append(PersonMapper.to_dto(person))
         return output_persons
+
+    def get_persons_id_in_frame(self, frame_index: int) -> list[int]:
+        output_persons_id: list[int] = []
+        for person in self.persons:
+            person_frames_index: list[int] = person.get_frames_indexes()
+            if frame_index in person_frames_index:
+                output_persons_id.append(person.id)
+                break
+        return output_persons_id

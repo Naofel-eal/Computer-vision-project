@@ -42,3 +42,11 @@ class ImageEditor:
 
         blurred_frame = array(image)
         return blurred_frame
+    
+    @staticmethod
+    def BGR_to_RGB(frame: ndarray) -> ndarray:
+        return frame[:, :, ::-1]
+    
+    @staticmethod
+    def RGB_to_BGR(frame: ndarray) -> ndarray:
+        return frame[:, :, ::-1]

@@ -5,3 +5,6 @@ class PersonDTO:
         self.id = id
         self.face = cropped_face
         self.should_be_blur = should_be_blur
+
+    def __str__(self) -> str:
+        return f"PersonDTO: {self.id} - Should be blur: {self.should_be_blur}"
