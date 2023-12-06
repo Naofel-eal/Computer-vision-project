@@ -8,4 +8,10 @@ class Prediction:
 
     def __str__(self) -> str:
         return f"Prediction: {self.bounding_box}, {self.confidence*100:.2f}%"
+    
+    def __eq__(self, other: 'Prediction') -> bool: 
+        if not isinstance(other, Prediction):
+            return NotImplemented
+
+        return self.bounding_box == other.bounding_box and self.confidence == other.confidence
 

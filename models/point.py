@@ -11,3 +11,9 @@ class Point:
 
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
+    
+    def __eq__(self, other: 'Point') -> bool:
+        if not isinstance(other, Point):
+            return NotImplemented
+        
+        return self.x == other.x and self.y == other.y

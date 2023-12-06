@@ -22,5 +22,24 @@ class Person:
                 return face
         return None
     
+    def add_face(self, face: Face) -> None:
+        self.faces.append(face)
+    
+    def remove_face(self, face: Face) -> None:
+        for current_face in self.faces:
+            if current_face == face:
+                self.faces.remove(current_face)
+                break
+
+    def replace_cropped_face(self, cropped_face: ndarray, cropped_face_confidence: float) -> None:
+        self.cropped_face = cropped_face
+        self.cropped_face_confidence = cropped_face_confidence
+
     def __str__(self) -> str:
         return f"Person n°{self.id} has {len(self.faces)} faces"
+
+    def __eq__(self, other: 'Person'):
+        if not isinstance(other, Person):
+            return NotImplemented
+        
+        return self.id == other.id and (self.cropped_face == other.cropped_face).all() and self.cropped_face_confidence == other.cropped_face_confidence

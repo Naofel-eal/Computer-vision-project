@@ -1,7 +1,6 @@
 from numpy import ndarray
 from deepface import DeepFace
 from models.comparison import Comparison
-from utils.performance_counter import PerformanceCounter
 
 class FaceComparator:
     @staticmethod

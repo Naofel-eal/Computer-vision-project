@@ -8,13 +8,22 @@ class PerformanceCounter:
         self.start_time: datetime = None
         self.end_time: datetime = None
         self.elapsed_time: timedelta = None
+        self.title: str = None
+        self.indentation: str = None
+        self.importance: str = None
 
-    def start(self, title: str = "Operation:") -> None:
+    def measure(self, title: str = "Operation", importance: str = 3) -> None:
         self._initialize()
         self.title: str = title
+        self.indentation: str = " " * (3 - importance)
+        self._print_title(importance)
         self.start_time = datetime.now()
+    
+    def _print_title(self, importance: str) -> None:
+        print(f"{self.indentation}{'#' * importance}-{self.title}-{'#' * importance}")
 
-    def stop(self) -> None:
+    def stop(self) -> timedelta:
         self.end_time = datetime.now()
         self.elapsed_time  = self.end_time - self.start_time
-        print(f"{self.title}: {self.elapsed_time.seconds} seconds - {self.elapsed_time.microseconds} microseconds")
+        print(f"{self.indentation}{self.title}: {self.elapsed_time}")
+        return self.elapsed_time

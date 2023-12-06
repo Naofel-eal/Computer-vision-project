@@ -27,7 +27,7 @@ class Video(Media):
         ret, frame = self.video.read()
         if ret:
             self.current_frame_index += 1
-            return ImageEditor.BGR_to_RGB(frame, COLOR_BGR2RGB)
+            return ImageEditor.BGR_to_RGB(frame)
         return None
 
     def get_nth_frame(self, n: int) -> ndarray:
