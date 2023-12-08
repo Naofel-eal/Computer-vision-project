@@ -7,7 +7,7 @@ from numpy import ndarray
 from models.prediction import Prediction
 
 class FaceDetector:
-    def __init__(self, model_path: str = "weights/model.pt") -> None:
+    def __init__(self, model_path: str = "weights/yolov8_detection_model.pt") -> None:
         self.model = YOLO(model_path)
         device = 'cuda' if cuda.is_available() else 'cpu'
         if device == 'cpu':
