@@ -1,10 +1,8 @@
 from DTOs.person_dto import PersonDTO
 from models.comparison import Comparison
-from models.face import Face
 from models.medias.video import Video
 from services.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
-from utils.performance_counter import PerformanceCounter
 from matplotlib import pyplot as plt
 from cv2 import VideoWriter, VideoWriter_fourcc
 
@@ -56,7 +54,7 @@ class VideoProcessor(MediaProcessor):
                                 current_person.remove_face(current_face)
                                 break
 
-    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "output.mp4") -> None:
+    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "output.mp4", gradual: bool = False) -> None:
         fourcc = VideoWriter_fourcc(*'MP4V')
         frame_index = 0
         frame = self.video.get_nth_frame(frame_index)
@@ -65,7 +63,7 @@ class VideoProcessor(MediaProcessor):
 
         persons_id_to_blur: list[int] = []
         for personDTO in personsDTO:
-            if personDTO.should_be_blur:
+            if personDTO.should_be_blurred:
                 persons_id_to_blur.append(personDTO.id)
 
         while frame is not None:
@@ -74,7 +72,7 @@ class VideoProcessor(MediaProcessor):
             for person_id in persons_in_this_frame:
                 if person_id in persons_id_to_blur:
                     person = self.person_manager.persons[person_id]
-                    frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box)
+                    frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box, gradual=gradual)
             
             frame = ImageEditor.RGB_to_BGR(frame)
             out.write(frame)

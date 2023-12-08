@@ -14,7 +14,7 @@ class ImageProcessor(MediaProcessor):
     
     def blur_faces(self, personsDTO: list[PersonDTO]):
         for personDTO in personsDTO:
-            if personDTO.should_be_blur:
+            if personDTO.should_be_blurred:
                 person: Person = self.person_manager.persons[personDTO.id]
                 for face in person.faces:
                     self.image = ImageEditor.blur(self.image, face.prediction.bounding_box)

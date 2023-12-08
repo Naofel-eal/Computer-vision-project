@@ -13,6 +13,11 @@ class FaceDetector:
         if device == 'cpu':
             print("WARNING: Using CPU for face detection. This will be very slow.")
         self.model.to(device)
+        self.warm_up()
+
+    def warm_up(self) -> None:
+        self.model.predict("resources/kad.jpg", verbose=False, save=False, show=False)
+        print("Face detector warmed up.")
 
     def detect(self, img: ndarray) -> list[Prediction]:
         results = self.model.predict(img, conf=0.5,show=False, save=False, verbose=False)
