@@ -6,7 +6,6 @@ from services.person_manager import PersonManager
 class MediaProcessor:
     def __init__(self):
         self.person_manager = PersonManager()
-        FaceComparator.compare("resources/kad.jpg", "resources/kad.jpg")
 
     def get_persons(self) -> list[PersonDTO]:
         pass

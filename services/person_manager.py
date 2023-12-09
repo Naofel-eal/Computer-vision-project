@@ -15,6 +15,7 @@ from utils.performance_counter import PerformanceCounter
 class PersonManager():
     def __init__(self) -> None:
         self.face_detector: FaceDetector = FaceDetector()
+        self.face_comparator: FaceComparator = FaceComparator()
         self.persons: list[Person] = []
         self.performance_counter = PerformanceCounter()
         self.detection_times: list[timedelta] = []
@@ -48,7 +49,7 @@ class PersonManager():
         return person.cropped_face_confidence < face.prediction.confidence
 
     def compare(self, target_face: ndarray, known_face: ndarray) -> Comparison:
-        return FaceComparator.compare(known_face, target_face)
+        return self.face_comparator.compare(known_face, target_face)
 
     def _is_persons_empty(self) -> bool:
         return len(self.persons) == 0
