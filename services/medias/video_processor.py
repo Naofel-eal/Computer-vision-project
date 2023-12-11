@@ -54,7 +54,7 @@ class VideoProcessor(MediaProcessor):
                                 current_person.remove_face(current_face)
                                 break
 
-    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "output.mp4", gradual: bool = False) -> None:
+    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False) -> None:
         fourcc = VideoWriter_fourcc(*'MP4V')
         frame_index = 0
         frame = self.video.get_nth_frame(frame_index)
