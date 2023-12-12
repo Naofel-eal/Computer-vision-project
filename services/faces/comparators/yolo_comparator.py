@@ -6,6 +6,12 @@ import numpy as np
 class YoloComparator(YoloModel, FaceComparator):
     def __init__(self, model_path: str = "weights/yolov8_classification_model.pt"):
         YoloModel.__init__(self, model_path=model_path)
+        self.change_model_names()
+        self.warm_up()
+    
+    def change_model_names(self):
+        for index, name in enumerate(self.model.names):
+            self.model.names[index] = f'person{index}'
 
     def warm_up(self) -> None:
         self.compare("resources/kad1.jpg", "resources/kad1.jpg")

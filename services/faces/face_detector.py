@@ -8,6 +8,7 @@ from services.faces.yolo_model import YoloModel
 class FaceDetector(YoloModel):
     def __init__(self, model_path: str = "weights/yolov8_detection_model.pt") -> None:
         super().__init__(model_path)
+        self.warm_up()
 
     def warm_up(self) -> None:
         self.detect("resources/kad1.jpg")
