@@ -11,10 +11,10 @@ class FaceModel:
         self.warm_up(model_type=model_type)
         
     def warm_up(self, model_type: str) -> None:
-        self.model.predict("resources/kad.jpg", verbose=False, save=False, show=False)
-        
+        self.model.predict("resources/kad1.jpg", verbose=False, save=False, show=False)
+
         if(model_type == 'detector'):
             print("Face detector warmed up.")
-            
+
         elif(model_type == 'comparator'):
             print("Face comparator warmed up.")

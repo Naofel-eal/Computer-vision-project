@@ -27,17 +27,17 @@ class FaceComparator(FaceModel):
             known_face_features = known_face_features[0].cpu().numpy()
             target_face_features = target_face_features[0].cpu().numpy()
             dist: float = self.findCosineDistance(known_face_features, target_face_features)
-            is_same_person: bool = self.is_same_person(distance=dist, threshold=0.30)
+            is_same_person: bool = self.is_same_person(distance=dist, threshold=0.4758)
             confidence: float = dist
         
         comparison: Comparison = Comparison(is_same_person, confidence)
         return comparison
     
-    def findCosineDistance(self, known_face_features, target_face_features) -> float:
+    def findCosineDistance(self, known_face_features: np.ndarray, target_face_features: np.ndarray) -> float:
         a = np.matmul(np.transpose(known_face_features), target_face_features)
         b = np.sum(np.multiply(known_face_features, known_face_features))
         c = np.sum(np.multiply(target_face_features, target_face_features))
         return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
     
-    def is_same_person(self, distance, threshold) -> bool:
+    def is_same_person(self, distance: float, threshold: float) -> bool:
         return distance <= threshold
