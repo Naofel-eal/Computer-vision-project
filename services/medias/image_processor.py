@@ -1,6 +1,6 @@
 from DTOs.person_dto import PersonDTO
 from models.person import Person
-from services.image_editor import ImageEditor
+from services.images.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
 
 class ImageProcessor(MediaProcessor):
@@ -9,7 +9,7 @@ class ImageProcessor(MediaProcessor):
         self.image = image
 
     def get_persons(self) -> list[PersonDTO]:
-        self.person_manager.analyze(0, self.image)
+        self.person_manager.analyze_frame(0, self.image)
         return self.person_manager.get_persons()
     
     def blur_faces(self, personsDTO: list[PersonDTO]):

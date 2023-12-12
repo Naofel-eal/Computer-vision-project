@@ -1,11 +1,12 @@
 from models.bounding_box import BoundingBox
 from models.face import Face
 from numpy import ndarray
+from uuid import uuid4
 
 class Person:
     
-    def __init__(self, id: int, face: Face, cropped_face: ndarray, cropped_face_confidence: float):
-        self.id: int = id
+    def __init__(self, face: Face, cropped_face: ndarray, cropped_face_confidence: float):
+        self.id = uuid4()
         self.faces: list[Face] = [face]
         self.cropped_face: ndarray = cropped_face
         self.cropped_face_confidence: float = cropped_face_confidence
@@ -24,6 +25,9 @@ class Person:
     
     def add_face(self, face: Face) -> None:
         self.faces.append(face)
+
+    def add_faces(self, faces: list[Face]) -> None:
+        self.faces.extend(faces)
     
     def remove_face(self, face: Face) -> None:
         for current_face in self.faces:

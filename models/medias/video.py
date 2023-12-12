@@ -3,7 +3,7 @@ from cv2 import VideoCapture, CAP_PROP_FPS, COLOR_BGR2RGB, CAP_PROP_POS_FRAMES
 from moviepy.editor import VideoFileClip, ImageSequenceClip, AudioFileClip
 from numpy import ndarray
 
-from services.image_editor import ImageEditor
+from services.images.image_editor import ImageEditor
 
 class Video(Media):
     def __init__(self, file_path: str) -> None:

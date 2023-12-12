@@ -1,7 +1,6 @@
 from DTOs.person_dto import PersonDTO
 from models.medias.media import Media
-from services.face_comparator import FaceComparator
-from services.person_manager import PersonManager
+from services.persons.person_manager import PersonManager
 
 class MediaProcessor:
     def __init__(self):
