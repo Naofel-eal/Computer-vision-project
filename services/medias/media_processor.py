@@ -3,8 +3,8 @@ from models.medias.media import Media
 from services.persons.person_manager import PersonManager
 
 class MediaProcessor:
-    def __init__(self):
-        self.person_manager = PersonManager()
+    def __init__(self, comparator: str = "Yolo"):
+        self.person_manager = PersonManager(comparator)
 
     def get_persons(self) -> list[PersonDTO]:
         pass

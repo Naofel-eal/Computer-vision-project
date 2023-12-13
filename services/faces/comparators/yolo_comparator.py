@@ -24,7 +24,7 @@ class YoloComparator(YoloModel, FaceComparator):
         target_face_features = target_face_features[0].cpu().numpy()
 
         distance: float = self._findCosineDistance(known_face_features, target_face_features)
-        is_same_person: bool = self._is_same_person(distance=distance, threshold=0.4758)
+        is_same_person: bool = self._is_same_person(distance=distance, threshold=0.7233)
         return Comparison(is_same_person, distance)
     
     def _findCosineDistance(self, known_face_features: np.ndarray, target_face_features: np.ndarray) -> float:
