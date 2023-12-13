@@ -8,7 +8,7 @@ from cv2 import VideoWriter, VideoWriter_fourcc
 from uuid import uuid4
 
 class VideoProcessor(MediaProcessor):
-    def __init__(self, video: Video, comparator="Yolo") -> None:
+    def __init__(self, video: Video, comparator="VGG-Face") -> None:
         super().__init__(comparator)
         self.video = video
 

@@ -13,11 +13,14 @@ from uuid import uuid4
 from matplotlib import pyplot as plt
 
 class PersonManager:
-    def __init__(self, comparator="Yolo") -> None:
+    def __init__(self, comparator="VGG-Face") -> None:
         self.face_detector: FaceDetector = FaceDetector()
         if comparator == "Deepface":
             self.face_comparator: FaceComparator = DeepFaceComparator()
-        elif comparator == "Yolo":
+        elif comparator == "VGG-Face":
+            self.face_comparator: FaceComparator = VGGFaceComparator()
+        else:
+            print(f"Comparator {comparator} not found, using VGG-Face")
             self.face_comparator: FaceComparator = VGGFaceComparator()
         self.persons: list[Person] = []
     
