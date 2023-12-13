@@ -4,7 +4,7 @@ from models.face import Face
 from models.person import Person
 from models.prediction import Prediction
 from services.faces.comparators.deepface_comparator import DeepFaceComparator
-from services.faces.comparators.yolo_comparator import YoloComparator
+from services.faces.comparators.vgg_face_comparator import VGGFaceComparator
 from services.faces.face_detector import FaceDetector
 from services.faces.comparators.face_comparator import FaceComparator
 from services.images.image_editor import ImageEditor
@@ -18,7 +18,7 @@ class PersonManager:
         if comparator == "Deepface":
             self.face_comparator: FaceComparator = DeepFaceComparator()
         elif comparator == "Yolo":
-            self.face_comparator: FaceComparator = YoloComparator()
+            self.face_comparator: FaceComparator = VGGFaceComparator()
         self.persons: list[Person] = []
     
     def analyze_frame(self, frame_index: int, frame: ndarray) -> None:

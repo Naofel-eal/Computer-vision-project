@@ -1,18 +1,24 @@
 from models.point import Point
 from models.bounding_box import BoundingBox
 from numpy import ndarray
+from ultralytics import YOLO
+from torch import cuda
 
 from models.prediction import Prediction
-from services.faces.yolo_model import YoloModel
+from services.faces.model import Model
 
-class FaceDetector(YoloModel):
+class FaceDetector(Model):
     def __init__(self, model_path: str = "weights/yolov8_detection_model.pt") -> None:
-        super().__init__(model_path)
+        Model.__init__(self, model_path=model_path)
+        self.model = YOLO(self.model_path)
+        device = 'cuda' if cuda.is_available() else 'cpu'
+        print(f"Yolo FaceDetector model running on: {device}")
+        self.model.to(device)
         self.warm_up()
 
     def warm_up(self) -> None:
         self.detect("resources/kad1.jpg")
-        print("Face detector warmed up.")
+        print("Yolo FaceDetector warmed up.")
 
     def detect(self, img: ndarray) -> list[Prediction]:
         results = self.model.predict(img, conf=0.5,show=False, save=False, verbose=False)
