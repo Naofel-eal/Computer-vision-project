@@ -7,9 +7,6 @@ from services.medias.media_processor import MediaProcessor
 class ImageProcessor(MediaProcessor):
     def __init__(self, comparator="VGG-Face"):
         super().__init__(comparator)
-        
-    def reset(self):
-        self.person_manager.reset()
 
     def get_persons(self, frame: ndarray) -> list[PersonDTO]:
         self.person_manager.analyze_frame(0, frame)
@@ -29,3 +26,4 @@ class ImageProcessor(MediaProcessor):
                 print(f"Person with id {person_id} not found")
 
         return frame
+    

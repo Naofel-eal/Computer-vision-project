@@ -5,6 +5,9 @@ from services.persons.person_manager import PersonManager
 class MediaProcessor:
     def __init__(self, comparator: str = "VGG-Face"):
         self.person_manager = PersonManager(comparator)
+        
+    def reset(self):
+        self.person_manager.reset()
 
     def get_persons(self) -> list[PersonDTO]:
         pass

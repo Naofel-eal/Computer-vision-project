@@ -7,7 +7,7 @@ class ImageInterface:
     def __init__(self):
         self.image_tab = gr.Blocks()
         self.image_processor = ImageProcessor()
-        self.personsDTO = None
+        self.personsDTO = []
         
         with self.image_tab:  
             gr.Markdown(
@@ -27,7 +27,7 @@ class ImageInterface:
             )
             persons_faces_output = gr.Gallery(label="Detected faces of people", show_label=True, preview=True)
             checkboxes = gr.CheckboxGroup(label="Select the people you want to blur", info="You can select as many people as you want.")
-            apply_blur_checkbox = gr.Checkbox(label="Gradient blur", info="Check the box bellow if you want to apply a gradient circular blur rather than a raw rectangular blur. (Note that the image processing will take longer with gradient blur)")
+            gradient_blur_checkbox = gr.Checkbox(label="Gradient blur", info="Check the box bellow if you want to apply a gradient circular blur rather than a raw rectangular blur. (Note that the image processing will take longer with gradient blur)")
             blur_button = gr.Button("Image processing")
             
             gr.Markdown(
@@ -40,7 +40,7 @@ class ImageInterface:
             
             analyse_button.click(self.analyse_image, inputs=image_input, outputs=[persons_faces_output, checkboxes])
             checkboxes.change(self.update_persons_should_be_blurred, inputs=checkboxes)
-            blur_button.click(self.apply_blur, inputs=[image_input, apply_blur_checkbox], outputs=image_output)
+            blur_button.click(self.apply_blur, inputs=[image_input, gradient_blur_checkbox], outputs=image_output)
             image_input.change(self.reset, outputs=[persons_faces_output, checkboxes, image_output])
             
 
@@ -62,11 +62,13 @@ class ImageInterface:
                 index = int(label.replace("Person ", ""))
                 self.personsDTO[index].should_be_blurred = True
             
-    def apply_blur(self, image, apply_blur_checkbox_value):
-        image = self.image_processor.apply_blur(frame=image, personsDTO=self.personsDTO, gradual=apply_blur_checkbox_value)
+    def apply_blur(self, image, gradient_blur_checkbox_value):
+        image = self.image_processor.apply_blur(frame=image, personsDTO=self.personsDTO, gradual=gradient_blur_checkbox_value)
         return image
     
     def reset(self):
         self.image_processor.reset()
+        self.personsDTO = []
         checkboxes = gr.CheckboxGroup(choices=[], value=[], label="Select the persons you want to blur", info="You can select as many people as you want.")
         return None, checkboxes, None
+    

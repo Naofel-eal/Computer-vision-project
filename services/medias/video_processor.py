@@ -6,24 +6,24 @@ from services.medias.media_processor import MediaProcessor
 from matplotlib import pyplot as plt
 from cv2 import VideoWriter, VideoWriter_fourcc
 from uuid import uuid4
+from os import getcwd
 
 class VideoProcessor(MediaProcessor):
-    def __init__(self, video: Video, comparator="VGG-Face") -> None:
+    def __init__(self, comparator="VGG-Face") -> None:
         super().__init__(comparator)
-        self.video = video
 
-    def get_persons(self) -> list[PersonDTO]:
-        self._analyze()
-        self._correction()
+    def get_persons(self, video: Video) -> list[PersonDTO]:
+        self._analyze(video)
+        self._correction(video)
         return self.person_manager.get_persons()
 
-    def _analyze(self) -> None:
+    def _analyze(self, video: Video) -> None:
         index = 0
-        frame = self.video.get_next_frame()
+        frame = video.get_next_frame()
         while frame is not None:
             print(f"Processing frame {index}...")
             self.person_manager.analyze_frame(index, frame)
-            frame = self.video.get_next_frame()
+            frame = video.get_next_frame()
             index += 1
         for index, person in enumerate(self.person_manager.persons):
             plt.suptitle("Detected persons during analysis")
@@ -32,7 +32,7 @@ class VideoProcessor(MediaProcessor):
             plt.axis('off')
         plt.show()
 
-    def _correction(self) -> None:
+    def _correction(self, video: Video) -> None:
         print("Correction")
         self.person_manager.group_identical_persons()
 
@@ -40,7 +40,7 @@ class VideoProcessor(MediaProcessor):
             for current_face in current_person.faces:
                 for other_person_index, other_person in enumerate(self.person_manager.persons):
                     if current_person_index != other_person_index:
-                        current_cropped_face = ImageEditor.crop(self.video.get_nth_frame(current_face.frame_index), current_face.prediction.bounding_box)
+                        current_cropped_face = ImageEditor.crop(video.get_nth_frame(current_face.frame_index), current_face.prediction.bounding_box)
                         comparison: Comparison = self.person_manager.compare_faces(current_cropped_face, other_person.cropped_face)
                         other_person_distance = comparison.distance
                         if comparison.is_same_person:
@@ -63,13 +63,13 @@ class VideoProcessor(MediaProcessor):
                                 current_person.remove_face(current_face)
                                 break
 
-    def save(self, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False) -> None:
+    def save(self, video: Video, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False) -> str:
         print("Saving video...")
         fourcc = VideoWriter_fourcc(*'MP4V')
         frame_index = 0
-        frame = self.video.get_nth_frame(frame_index)
+        frame = video.get_nth_frame(frame_index)
         shape = frame.shape
-        out = VideoWriter(output_video_path, fourcc, self.video.fps, (shape[1], shape[0]))
+        out = VideoWriter(output_video_path, fourcc, video.fps, (shape[1], shape[0]))
 
         persons_id_to_blur: list[int] = []
         for personDTO in personsDTO:
@@ -89,7 +89,10 @@ class VideoProcessor(MediaProcessor):
             
             frame = ImageEditor.RGB_to_BGR(frame)
             out.write(frame)
-            frame = self.video.get_next_frame()
+            frame = video.get_next_frame()
             frame_index += 1
 
         out.release()
+        
+        return getcwd() + '/' + output_video_path
+    
