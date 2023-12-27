@@ -13,7 +13,7 @@ class VGGFaceComparator(Model, FaceComparator):
         print(f"PyTorch VGGFaceComparator model running on: {self.device}")
         self.model = torch.load(self.model_path).to(self.device)
         self.model.eval()
-        self.threshold = 0.38
+        self.threshold = 0.40
         self.warm_up()
 
     def warm_up(self) -> None:

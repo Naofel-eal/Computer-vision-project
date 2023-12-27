@@ -52,22 +52,25 @@ class PersonManager:
         self.persons.append(new_person)
         return new_person.id
 
-    def group_identical_persons(self) -> bool:
+    def group_identical_persons(self) -> None:
         print("Grouping identical persons")
+        has_grouped_persons: bool = False
         for current_person_index, current_person in enumerate(self.persons):
             for other_person_index, other_person in enumerate(self.persons):
                 if current_person_index != other_person_index:
                     comparison: Comparison = self.compare_faces(current_person.cropped_face, other_person.cropped_face)
                     if comparison.is_same_person:
-                        print(f"Grouping persons {current_person_index + 1}/{len(self.persons)} -> {other_person_index + 1}/{len(self.persons)}")
+                        print(f"Grouping persons {current_person_index + 1}/{len(self.persons)} and {other_person_index + 1}/{len(self.persons)}")
                         self._merge_persons(current_person, other_person)
+                        has_grouped_persons = True
         
-        for index, person in enumerate(self.persons):
-            plt.suptitle("Persons after grouping")
-            plt.subplot(1, len(self.persons), index+1)
-            plt.imshow(person.cropped_face)
-            plt.axis('off')
-        plt.show()
+        if has_grouped_persons:
+            for index, person in enumerate(self.persons):
+                plt.suptitle("Persons after grouping")
+                plt.subplot(1, len(self.persons), index+1)
+                plt.imshow(person.cropped_face)
+                plt.axis('off')
+            plt.show()
     
     def _merge_persons(self, current_person: Person, other_person: Person) -> None:
         person_with_better_confidence = current_person if current_person.cropped_face_confidence > other_person.cropped_face_confidence else other_person
