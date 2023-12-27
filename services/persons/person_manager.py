@@ -23,6 +23,9 @@ class PersonManager:
             print(f"Comparator {comparator} not found, using VGG-Face")
             self.face_comparator: FaceComparator = VGGFaceComparator()
         self.persons: list[Person] = []
+        
+    def reset(self):
+        self.persons = []
     
     def analyze_frame(self, frame_index: int, frame: ndarray) -> None:
         persons_id_in_current_frame: list[uuid4] = []
