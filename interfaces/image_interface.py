@@ -55,9 +55,11 @@ class ImageInterface:
         return persons_faces, checkboxes
 
     def update_persons_should_be_blurred(self, checkboxes):
-        if checkboxes:
+        if self.personsDTO:
             for personDTO in self.personsDTO:
                 personDTO.should_be_blurred = False
+        
+        if checkboxes:
             for label in checkboxes:
                 index = int(label.replace("Person ", ""))
                 self.personsDTO[index].should_be_blurred = True
