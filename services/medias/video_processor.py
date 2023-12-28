@@ -3,8 +3,8 @@ from models.comparison import Comparison
 from models.medias.video import Video
 from services.images.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
-from matplotlib import pyplot as plt
 from cv2 import VideoWriter, VideoWriter_fourcc
+from moviepy.editor import VideoFileClip
 from uuid import uuid4
 from os import getcwd
 
@@ -25,12 +25,6 @@ class VideoProcessor(MediaProcessor):
             self.person_manager.analyze_frame(index, frame)
             frame = video.get_next_frame()
             index += 1
-        for index, person in enumerate(self.person_manager.persons):
-            plt.suptitle("Detected persons during analysis")
-            plt.subplot(1, len(self.person_manager.persons), index+1)
-            plt.imshow(person.cropped_face)
-            plt.axis('off')
-        plt.show()
 
     def _correction(self, video: Video) -> None:
         print("Correction")
@@ -46,30 +40,18 @@ class VideoProcessor(MediaProcessor):
                         if comparison.is_same_person:
                             current_face_distance: float = self.person_manager.compare_faces(current_cropped_face, current_person.cropped_face).distance
                             if other_person_distance < current_face_distance:
-                                fig = plt.figure()
-                                plt.suptitle(f"Frame {current_face.frame_index} - Correction: {current_person_index + 1}/{len(self.person_manager.persons)} -> {other_person_index + 1}/{len(self.person_manager.persons)}")
-                                ax1 = fig.add_subplot(1, 3, 1)
-                                ax2 = fig.add_subplot(1, 3, 2)
-                                ax3 = fig.add_subplot(1, 3, 3)
-                                ax1.imshow(current_cropped_face)
-                                ax2.imshow(current_person.cropped_face)
-                                ax3.imshow(other_person.cropped_face)
-                                ax1.set_title('Detected face')
-                                ax2.set_title(f'Old person: {current_face_distance:.4f}')
-                                ax3.set_title(f'New person: {other_person_distance:.4f}')
-                                plt.axis('off')
-                                plt.show()
                                 other_person.add_face(current_face)
                                 current_person.remove_face(current_face)
                                 break
 
     def save(self, video: Video, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False) -> str:
+        temp_path = "results/temp.mp4" 
         print("Saving video...")
-        fourcc = VideoWriter_fourcc(*'MP4V')
+        fourcc = VideoWriter_fourcc(*'mp4v')
         frame_index = 0
         frame = video.get_nth_frame(frame_index)
         shape = frame.shape
-        out = VideoWriter(output_video_path, fourcc, video.fps, (shape[1], shape[0]))
+        out = VideoWriter(temp_path, fourcc, video.fps, (shape[1], shape[0]))
 
         persons_id_to_blur: list[int] = []
         for personDTO in personsDTO:
@@ -77,7 +59,7 @@ class VideoProcessor(MediaProcessor):
                 persons_id_to_blur.append(personDTO.id)
 
         while frame is not None:
-            print(f"Saving frame {frame_index}")
+            print(f"Saving frame {frame_index}...")
             persons_id_in_current_frame: list[uuid4] = self.person_manager.get_persons_id_in_frame(frame_index)
             for person_id in persons_id_in_current_frame:
                 if person_id in persons_id_to_blur:
@@ -93,6 +75,9 @@ class VideoProcessor(MediaProcessor):
             frame_index += 1
 
         out.release()
-        
+
+        video_clip = VideoFileClip(temp_path)
+        video_clip: VideoFileClip = video_clip.set_audio(video.audio)
+        video_clip.write_videofile(output_video_path, fps=video.fps, codec="libx264", audio_codec="aac")
+
         return getcwd() + '/' + output_video_path
-    

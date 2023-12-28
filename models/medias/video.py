@@ -1,5 +1,5 @@
 from models.medias.media import Media
-from cv2 import VideoCapture, CAP_PROP_FPS, COLOR_BGR2RGB, CAP_PROP_POS_FRAMES
+from cv2 import VideoCapture, CAP_PROP_FPS, CAP_PROP_POS_FRAMES
 from moviepy.editor import VideoFileClip, ImageSequenceClip, AudioFileClip
 from numpy import ndarray
 
@@ -15,13 +15,8 @@ class Video(Media):
         self.current_frame_index = -1
 
     def _extract_audio(self) -> AudioFileClip:
-        video = VideoFileClip(self.file_path)
-        return video.audio
-
-    def merge(self, frames: list) -> ImageSequenceClip:
-        render = ImageSequenceClip(frames, fps=self.fps)
-        render.set_audio(self.audio)
-        return render
+        audio = VideoFileClip(self.file_path).audio
+        return audio
 
     def get_next_frame(self) -> ndarray:
         ret, frame = self.video.read()

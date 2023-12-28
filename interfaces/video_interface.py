@@ -41,12 +41,13 @@ class VideoInterface:
             
             analyse_button.click(self.analyse_video, inputs=video_input, outputs=[persons_faces_output, checkboxes])
             checkboxes.change(self.update_persons_should_be_blurred, inputs=checkboxes)
-            blur_button.click(self.apply_blur, inputs=[video_input, gradient_blur_checkbox], outputs=video_output)
+            blur_button.click(self.apply_blur, inputs=[gradient_blur_checkbox], outputs=video_output)
             video_input.change(self.reset, outputs=[persons_faces_output, checkboxes, video_output])
             
 
     def analyse_video(self, video_path):
-        self.personsDTO = self.video_processor.get_persons(video=Video(video_path))
+        self.video = Video(video_path)
+        self.personsDTO = self.video_processor.get_persons(self.video)
         persons_labels = []
         persons_faces = []
         for i, person in enumerate (self.personsDTO):
@@ -63,8 +64,8 @@ class VideoInterface:
                 index = int(label.replace("Person ", ""))
                 self.personsDTO[index].should_be_blurred = True
             
-    def apply_blur(self, video_path, gradient_blur_checkbox_value):
-        blurred_video_path = self.video_processor.save(video=Video(video_path), personsDTO=self.personsDTO, gradual=gradient_blur_checkbox_value)
+    def apply_blur(self, gradient_blur_checkbox_value):
+        blurred_video_path = self.video_processor.save(video=self.video, personsDTO=self.personsDTO, gradual=gradient_blur_checkbox_value)
         return blurred_video_path
     
     def reset(self):
