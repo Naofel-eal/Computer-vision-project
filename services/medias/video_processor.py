@@ -6,7 +6,7 @@ from services.medias.media_processor import MediaProcessor
 from cv2 import VideoWriter, VideoWriter_fourcc
 from moviepy.editor import VideoFileClip
 from uuid import uuid4
-from os import getcwd
+from os import getcwd, remove
 
 class VideoProcessor(MediaProcessor):
     def __init__(self, comparator="VGG-Face") -> None:
@@ -79,5 +79,7 @@ class VideoProcessor(MediaProcessor):
         video_clip = VideoFileClip(temp_path)
         video_clip: VideoFileClip = video_clip.set_audio(video.audio)
         video_clip.write_videofile(output_video_path, fps=video.fps, codec="libx264", audio_codec="aac")
+
+        remove(temp_path)
 
         return getcwd() + '/' + output_video_path
