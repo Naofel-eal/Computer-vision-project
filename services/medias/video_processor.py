@@ -7,6 +7,7 @@ from cv2 import VideoWriter, VideoWriter_fourcc
 from moviepy.editor import VideoFileClip
 from uuid import uuid4
 from os import getcwd, remove
+import gradio as gr
 
 class VideoProcessor(MediaProcessor):
     def __init__(self, comparator="VGG-Face") -> None:
@@ -17,20 +18,23 @@ class VideoProcessor(MediaProcessor):
         self._correction(video)
         return self.person_manager.get_persons()
 
-    def _analyze(self, video: Video) -> None:
-        index = 0
-        frame = video.get_next_frame()
-        while frame is not None:
-            print(f"Processing frame {index}...")
-            self.person_manager.analyze_frame(index, frame)
-            frame = video.get_next_frame()
-            index += 1
+    def _analyze(self, video: Video, progress=gr.Progress()) -> None:
+        gr.Info("Analysis in progress...")
+        progress(0)
+        for i in progress.tqdm(range(video.frame_count), desc="Analyzing video", total=video.frame_count):
+            frame = video.get_nth_frame(i)
+            if frame is not None:
+                self.person_manager.analyze_frame(i, frame)
+            else:
+                print(f"Frame {i} not found")
+                break
 
-    def _correction(self, video: Video) -> None:
-        print("Correction")
+    def _correction(self, video: Video, progress=gr.Progress()) -> None:
+        gr.Info("Correction in progress...")
         self.person_manager.group_identical_persons()
+        total_faces_count = sum([len(person.faces) for person in self.person_manager.persons])
 
-        for current_person_index, current_person in enumerate(self.person_manager.persons):
+        for current_person_index, current_person in progress.tqdm(enumerate(self.person_manager.persons), desc="Correcting faces", total=total_faces_count):
             for current_face in current_person.faces:
                 for other_person_index, other_person in enumerate(self.person_manager.persons):
                     if current_person_index != other_person_index:
@@ -44,9 +48,10 @@ class VideoProcessor(MediaProcessor):
                                 current_person.remove_face(current_face)
                                 break
 
-    def save(self, video: Video, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False) -> str:
+    def save(self, video: Video, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False, progress=gr.Progress()) -> str:
+        gr.Info("Saving video...")
+        progress(0)
         temp_path = "results/temp.mp4" 
-        print("Saving video...")
         fourcc = VideoWriter_fourcc(*'mp4v')
         frame_index = 0
         frame = video.get_nth_frame(frame_index)
@@ -58,8 +63,10 @@ class VideoProcessor(MediaProcessor):
             if personDTO.should_be_blurred:
                 persons_id_to_blur.append(personDTO.id)
 
-        while frame is not None:
-            print(f"Saving frame {frame_index}...")
+        for frame_index in progress.tqdm(range(video.frame_count), desc="Saving video", total=video.frame_count):
+            frame = video.get_nth_frame(frame_index)
+            if frame is None:
+                break
             persons_id_in_current_frame: list[uuid4] = self.person_manager.get_persons_id_in_frame(frame_index)
             for person_id in persons_id_in_current_frame:
                 if person_id in persons_id_to_blur:
@@ -71,9 +78,6 @@ class VideoProcessor(MediaProcessor):
             
             frame = ImageEditor.RGB_to_BGR(frame)
             out.write(frame)
-            frame = video.get_next_frame()
-            frame_index += 1
-
         out.release()
 
         video_clip = VideoFileClip(temp_path)

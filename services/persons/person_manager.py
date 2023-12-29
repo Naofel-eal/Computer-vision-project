@@ -10,7 +10,7 @@ from services.faces.comparators.face_comparator import FaceComparator
 from services.images.image_editor import ImageEditor
 from numpy import ndarray
 from uuid import uuid4
-from matplotlib import pyplot as plt
+import gradio as gr
 
 class PersonManager:
     def __init__(self, comparator="VGG-Face") -> None:
@@ -56,8 +56,7 @@ class PersonManager:
         return new_person.id
 
     def group_identical_persons(self) -> None:
-        print("Grouping identical persons")
-        has_grouped_persons: bool = False
+        gr.Info("Grouping identical persons...")
         for current_person_index, current_person in enumerate(self.persons):
             for other_person_index, other_person in enumerate(self.persons):
                 if current_person_index != other_person_index:
@@ -65,15 +64,6 @@ class PersonManager:
                     if comparison.is_same_person:
                         print(f"Grouping persons {current_person_index + 1}/{len(self.persons)} and {other_person_index + 1}/{len(self.persons)}")
                         self._merge_persons(current_person, other_person)
-                        has_grouped_persons = True
-        
-        if has_grouped_persons:
-            for index, person in enumerate(self.persons):
-                plt.suptitle("Persons after grouping")
-                plt.subplot(1, len(self.persons), index+1)
-                plt.imshow(person.cropped_face)
-                plt.axis('off')
-            plt.show()
     
     def _merge_persons(self, current_person: Person, other_person: Person) -> None:
         person_with_better_confidence = current_person if current_person.cropped_face_confidence > other_person.cropped_face_confidence else other_person
