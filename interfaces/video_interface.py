@@ -10,7 +10,8 @@ class VideoInterface:
         self.personsDTO = []
         
         with self.video_tab:
-            with gr.Column(elem_classes="part1") as self.part1_container:
+            part1_video_container = gr.Column()
+            with part1_video_container:
                 gr.Markdown(
                     """
                         # Import your video
@@ -20,8 +21,8 @@ class VideoInterface:
                 video_input = gr.Video(label="Input video")
                 analyse_button = gr.Button("Analyze the video")
 
-            part2_container = gr.Column(elem_classes="part2")
-            with part2_container:
+            part2_video_container = gr.Column(elem_classes="part2-video")
+            with part2_video_container:
                 gr.Markdown(
                     """
                         # Settings
@@ -33,8 +34,8 @@ class VideoInterface:
                 gradient_blur_checkbox = gr.Checkbox(label="Gradient blur", info="Check the box bellow if you want to apply a gradient circular blur rather than a raw rectangular blur. (Note that the video processing will take longer with gradient blur)")
                 blur_button = gr.Button("Video processing")
 
-            part3_container = gr.Column(elem_classes="part3")
-            with part3_container:
+            part3_video_container = gr.Column(elem_classes="part3-video")
+            with part3_video_container:
                 gr.Markdown(
                     """
                         # Output video
@@ -43,10 +44,10 @@ class VideoInterface:
                 )
                 video_output = gr.Video(label="Output video")
             
-            analyse_button.click(self.analyse_video, inputs=video_input, outputs=[persons_faces_output, checkboxes], js="(video_input) => {document.querySelector('.part2').setAttribute('style', 'display: block !important;');return video_input;}")
+            analyse_button.click(self.analyse_video, inputs=video_input, outputs=[persons_faces_output, checkboxes], js="(video_input) => {document.querySelector('.part2-video').setAttribute('style', 'display: block !important;'); return video_input;}")
             checkboxes.change(self.update_persons_should_be_blurred, inputs=checkboxes)
-            blur_button.click(self.apply_blur, inputs=gradient_blur_checkbox, outputs=[video_output], js="(gradient_blur_checkbox) => {document.querySelector('.part3').setAttribute('style', 'display: block !important;');return gradient_blur_checkbox;}")
-            video_input.change(self.reset, outputs=[persons_faces_output, checkboxes, video_output], js="() => {document.querySelector('.part2').setAttribute('style', 'display: none !important;');document.querySelector('.part3').setAttribute('style', 'display: none !important;')}")
+            blur_button.click(self.apply_blur, inputs=gradient_blur_checkbox, outputs=video_output, js="(gradient_blur_checkbox) => {document.querySelector('.part3-video').setAttribute('style', 'display: block !important;'); return gradient_blur_checkbox;}")
+            video_input.change(self.reset, outputs=[persons_faces_output, checkboxes, video_output], js="() => {document.querySelector('.part2-video').setAttribute('style', 'display: none !important;'); document.querySelector('.part3-video').setAttribute('style', 'display: none !important;')}")
             
 
     def analyse_video(self, video_path):

@@ -49,7 +49,7 @@ class VideoProcessor(MediaProcessor):
                                 break
 
     def save(self, video: Video, personsDTO: list[PersonDTO], output_video_path: str = "results/output.mp4", gradual: bool = False, progress=gr.Progress()) -> str:
-        gr.Info("Saving video...")
+        gr.Info("Applying blur...")
         progress(0)
         temp_path = "results/temp.mp4" 
         fourcc = VideoWriter_fourcc(*'mp4v')
