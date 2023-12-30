@@ -1,14 +1,17 @@
-from DTOs.person_dto import PersonDTO
-from models.medias.image import Image
-from numpy import ndarray
-from services.images.image_editor import ImageEditor
-from services.medias.media_processor import MediaProcessor
 import gradio as gr
 import copy
+import logging
+from numpy import ndarray
+
+from DTOs.person_dto import PersonDTO
+from models.medias.image import Image
+from services.images.image_editor import ImageEditor
+from services.medias.media_processor import MediaProcessor
+
 
 class ImageProcessor(MediaProcessor):
-    def __init__(self, comparator="VGG-Face"):
-        super().__init__(comparator)
+    def __init__(self):
+        super().__init__()
 
     def get_persons(self, frame: ndarray) -> list[PersonDTO]:
         gr.Info("Analysis in progress...")
@@ -28,7 +31,7 @@ class ImageProcessor(MediaProcessor):
             if person is not None:
                 res_frame = ImageEditor.blur(res_frame, person.get_face(0).prediction.bounding_box, gradual=gradual)
             else:
-                print(f"Person with id {person_id} not found")
+                logging.warning(f"Person with id {person_id} not found")
 
         return res_frame
     

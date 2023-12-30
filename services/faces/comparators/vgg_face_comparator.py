@@ -1,26 +1,26 @@
-from models.comparison import Comparison
-from services.faces.comparators.face_comparator import FaceComparator
 from cv2 import imread, resize, cvtColor, COLOR_BGR2RGB
 import numpy as np
+import logging
 import torch
 
+from models.comparison import Comparison
+from services.faces.comparators.face_comparator import FaceComparator
 from services.faces.model import Model
 
 class VGGFaceComparator(Model, FaceComparator):
     def __init__(self, model_path: str = "weights/vgg-face.pt"):
         Model.__init__(self, model_path=model_path)
         self.device  = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        print(f"PyTorch VGGFaceComparator model running on: {self.device}")
+        logging.info(f"PyTorch VGGFaceComparator model running on: {self.device}")
         self.model = torch.load(self.model_path).to(self.device)
         self.model.eval()
         self.threshold = 0.40
         self.warm_up()
 
     def warm_up(self) -> None:
-        image = imread("resources/kad1.jpg")
-        image = cvtColor(image, COLOR_BGR2RGB)
-        self.compare(image, image)
-        print("PyTorch VGGFaceComparator warmed up.")
+        empty_image = np.zeros((224, 224, 3))
+        self.compare(empty_image, empty_image)
+        logging.info("PyTorch VGGFaceComparator warmed up.")
         
     def compare(self, known_face: np.ndarray, target_face: np.ndarray) -> Comparison:
         with torch.no_grad():

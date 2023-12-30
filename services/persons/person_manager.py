@@ -1,27 +1,21 @@
+from numpy import ndarray
+from uuid import uuid4
+import gradio as gr
+
 from mappers.person_mapper import PersonMapper
 from models.comparison import Comparison
 from models.face import Face
 from models.person import Person
 from models.prediction import Prediction
-from services.faces.comparators.deepface_comparator import DeepFaceComparator
 from services.faces.comparators.vgg_face_comparator import VGGFaceComparator
 from services.faces.face_detector import FaceDetector
 from services.faces.comparators.face_comparator import FaceComparator
 from services.images.image_editor import ImageEditor
-from numpy import ndarray
-from uuid import uuid4
-import gradio as gr
 
 class PersonManager:
-    def __init__(self, comparator="VGG-Face") -> None:
+    def __init__(self) -> None:
         self.face_detector: FaceDetector = FaceDetector()
-        if comparator == "Deepface":
-            self.face_comparator: FaceComparator = DeepFaceComparator()
-        elif comparator == "VGG-Face":
-            self.face_comparator: FaceComparator = VGGFaceComparator()
-        else:
-            print(f"Comparator {comparator} not found, using VGG-Face")
-            self.face_comparator: FaceComparator = VGGFaceComparator()
+        self.face_comparator: FaceComparator = VGGFaceComparator()
         self.persons: list[Person] = []
         
     def reset(self):
@@ -62,7 +56,7 @@ class PersonManager:
                 if current_person_index != other_person_index:
                     comparison: Comparison = self.compare_faces(current_person.cropped_face, other_person.cropped_face)
                     if comparison.is_same_person:
-                        print(f"Grouping persons {current_person_index + 1}/{len(self.persons)} and {other_person_index + 1}/{len(self.persons)}")
+                        gr.Info(f"Grouping persons {current_person_index + 1}/{len(self.persons)} and {other_person_index + 1}/{len(self.persons)}")
                         self._merge_persons(current_person, other_person)
     
     def _merge_persons(self, current_person: Person, other_person: Person) -> None:

@@ -1,9 +1,10 @@
-from models.point import Point
-from models.bounding_box import BoundingBox
-from numpy import ndarray
+from numpy import ndarray, zeros
 from ultralytics import YOLO
 from torch import cuda
+import logging
 
+from models.point import Point
+from models.bounding_box import BoundingBox
 from models.prediction import Prediction
 from services.faces.model import Model
 
@@ -12,13 +13,14 @@ class FaceDetector(Model):
         Model.__init__(self, model_path=model_path)
         self.model = YOLO(self.model_path)
         device = 'cuda' if cuda.is_available() else 'cpu'
-        print(f"Yolo FaceDetector model running on: {device}")
+        logging.info(f"Yolo FaceDetector model running on: {device}")
         self.model.to(device)
         self.warm_up()
 
     def warm_up(self) -> None:
-        self.detect("resources/kad1.jpg")
-        print("Yolo FaceDetector warmed up.")
+        empty_image = zeros((640, 640, 3))
+        self.detect(empty_image)
+        logging.info("Yolo FaceDetector warmed up.")
 
     def detect(self, img: ndarray) -> list[Prediction]:
         results = self.model.predict(img, conf=0.5,show=False, save=False, verbose=False)

@@ -1,4 +1,6 @@
+import os
 import gradio as gr
+
 from models.medias.video import Video
 from services.medias.video_processor import VideoProcessor
 
@@ -43,6 +45,8 @@ class VideoInterface:
                     """
                 )
                 video_output = gr.Video(label="Output video")
+                output_video_path = os.path.abspath("results/output.mp4")
+                gr.Markdown(f"The output video is present at {output_video_path}")
             
             analyse_button.click(self.analyse_video, inputs=video_input, outputs=[persons_faces_output, checkboxes], js="(video_input) => {document.querySelector('.part2-video').setAttribute('style', 'display: block !important;'); return video_input;}")
             checkboxes.change(self.update_persons_should_be_blurred, inputs=checkboxes)

@@ -1,17 +1,19 @@
+from cv2 import VideoWriter, VideoWriter_fourcc
+from moviepy.editor import VideoFileClip
+from uuid import uuid4
+from os import remove, path
+import gradio as gr
+import logging
+
 from DTOs.person_dto import PersonDTO
 from models.comparison import Comparison
 from models.medias.video import Video
 from services.images.image_editor import ImageEditor
 from services.medias.media_processor import MediaProcessor
-from cv2 import VideoWriter, VideoWriter_fourcc
-from moviepy.editor import VideoFileClip
-from uuid import uuid4
-from os import getcwd, remove
-import gradio as gr
 
 class VideoProcessor(MediaProcessor):
-    def __init__(self, comparator="VGG-Face") -> None:
-        super().__init__(comparator)
+    def __init__(self) -> None:
+        super().__init__()
 
     def get_persons(self, video: Video) -> list[PersonDTO]:
         self._analyze(video)
@@ -26,7 +28,7 @@ class VideoProcessor(MediaProcessor):
             if frame is not None:
                 self.person_manager.analyze_frame(i, frame)
             else:
-                print(f"Frame {i} not found")
+                logging.warning(f"Frame {i} not found")
                 break
 
     def _correction(self, video: Video, progress=gr.Progress()) -> None:
@@ -74,7 +76,7 @@ class VideoProcessor(MediaProcessor):
                     if person is not None:
                         frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box, gradual=gradual)
                     else:
-                        print(f"Person with id {person_id} not found")
+                        logging.warning(f"Person with id {person_id} not found")
             
             frame = ImageEditor.RGB_to_BGR(frame)
             out.write(frame)
@@ -86,4 +88,4 @@ class VideoProcessor(MediaProcessor):
 
         remove(temp_path)
 
-        return getcwd() + '/' + output_video_path
+        return path.abspath(output_video_path)

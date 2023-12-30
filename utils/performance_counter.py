@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import logging
 
 class PerformanceCounter:
     def __init__(self) -> None:
@@ -20,7 +21,7 @@ class PerformanceCounter:
         self.start_time = datetime.now()
     
     def _print_title(self, importance: str) -> None:
-        print(f"{self.indentation}{'#' * importance}-{self.title}-{'#' * importance}")
+        logging.info(f"{self.indentation}{'#' * importance}-{self.title}-{'#' * importance}")
 
     def stop(self) -> timedelta:
         self.end_time = datetime.now()

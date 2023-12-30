@@ -1,16 +1,17 @@
-from models.bounding_box import BoundingBox
 from numpy import ndarray, ascontiguousarray, interp, array
 from PIL import Image, ImageDraw
 from cv2 import GaussianBlur
+
+from models.bounding_box import BoundingBox
 
 class ImageEditor:
     
     @staticmethod
     def crop(frame: ndarray, bounding_box: BoundingBox) -> ndarray:
-        y1 = bounding_box.upper_left.y #- 50
-        y2 = bounding_box.bottom_right.y #+ 50
-        x1 = bounding_box.upper_left.x #- 50
-        x2 = bounding_box.bottom_right.x #+ 50
+        y1 = bounding_box.upper_left.y
+        y2 = bounding_box.bottom_right.y
+        x1 = bounding_box.upper_left.x
+        x2 = bounding_box.bottom_right.x
         result = ascontiguousarray(frame[y1:y2, x1:x2])
         return result
     
