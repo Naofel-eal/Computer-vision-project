@@ -12,5 +12,13 @@ class FaceComparator():
         pass
 
     @abstractmethod
-    def compare(self, known_face: np.ndarray, target_face: np.ndarray) -> Comparison:
+    def compare(self, target_face: np.ndarray, known_face: np.ndarray, known_face_is_feature: bool = False) -> Comparison:
+        pass
+
+    @abstractmethod
+    def get_features(self, face: np.ndarray) -> np.ndarray:
+        pass
+
+    @abstractmethod
+    def compare_features(self, target_face_features: np.ndarray, known_face_features: np.ndarray) -> Comparison:
         pass

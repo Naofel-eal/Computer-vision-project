@@ -1,4 +1,4 @@
-from numpy import ndarray, zeros
+from numpy import ndarray, ones
 from ultralytics import YOLO
 from torch import cuda
 import logging
@@ -18,7 +18,7 @@ class FaceDetector(Model):
         self.warm_up()
 
     def warm_up(self) -> None:
-        empty_image = zeros((640, 640, 3))
+        empty_image = ones((640, 640, 3))
         self.detect(empty_image)
         logging.info("Yolo FaceDetector warmed up.")
 

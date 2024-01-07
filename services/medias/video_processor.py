@@ -38,14 +38,16 @@ class VideoProcessor(MediaProcessor):
 
         for current_person_index, current_person in progress.tqdm(enumerate(self.person_manager.persons), desc="Correcting faces", total=total_faces_count):
             for current_face in current_person.faces:
+                current_croped_face = ImageEditor.crop(video.get_nth_frame(current_face.frame_index), current_face.prediction.bounding_box)
+                current_cropped_face_features = self.person_manager.face_comparator.get_features(current_croped_face)
                 for other_person_index, other_person in enumerate(self.person_manager.persons):
                     if current_person_index != other_person_index:
-                        current_cropped_face = ImageEditor.crop(video.get_nth_frame(current_face.frame_index), current_face.prediction.bounding_box)
-                        comparison: Comparison = self.person_manager.compare_faces(current_cropped_face, other_person.cropped_face)
+                        other_person_face_features = other_person.cropped_face_features
+                        comparison: Comparison = self.person_manager.compare_features(current_cropped_face_features, other_person_face_features)
                         other_person_distance = comparison.distance
                         if comparison.is_same_person:
-                            current_face_distance: float = self.person_manager.compare_faces(current_cropped_face, current_person.cropped_face).distance
-                            if other_person_distance < current_face_distance:
+                            current_person_distance: float = self.person_manager.compare_features(current_cropped_face_features, current_person.cropped_face_features).distance
+                            if other_person_distance < current_person_distance:
                                 other_person.add_face(current_face)
                                 current_person.remove_face(current_face)
                                 break
@@ -64,19 +66,28 @@ class VideoProcessor(MediaProcessor):
         for personDTO in personsDTO:
             if personDTO.should_be_blurred:
                 persons_id_to_blur.append(personDTO.id)
+            
+        frames_index_to_blur = set()
+        for person_id in persons_id_to_blur:
+            for person in self.person_manager.persons:
+                if person.id == person_id:
+                    frames_index_to_blur.update(person.get_frames_indexes())
+                    break
 
         for frame_index in progress.tqdm(range(video.frame_count), desc="Saving video", total=video.frame_count):
             frame = video.get_nth_frame(frame_index)
             if frame is None:
                 break
-            persons_id_in_current_frame: list[uuid4] = self.person_manager.get_persons_id_in_frame(frame_index)
-            for person_id in persons_id_in_current_frame:
-                if person_id in persons_id_to_blur:
-                    person = next((person for person in self.person_manager.persons if person.id == person_id), None)
-                    if person is not None:
-                        frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box, gradual=gradual)
-                    else:
-                        logging.warning(f"Person with id {person_id} not found")
+
+            if frame_index in frames_index_to_blur:
+                persons_id_in_current_frame: list[uuid4] = self.person_manager.get_persons_id_in_frame(frame_index)
+                for person_id in persons_id_in_current_frame:
+                    if person_id in persons_id_to_blur:
+                        person = next((person for person in self.person_manager.persons if person.id == person_id), None)
+                        if person is not None:
+                            frame = ImageEditor.blur(frame, person.get_face(frame_index).prediction.bounding_box, gradual=gradual)
+                        else:
+                            logging.warning(f"Person with id {person_id} not found")
             
             frame = ImageEditor.RGB_to_BGR(frame)
             out.write(frame)

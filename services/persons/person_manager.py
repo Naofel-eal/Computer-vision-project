@@ -31,21 +31,22 @@ class PersonManager:
     
     def _save_face(self, frame: ndarray, face: Face, persons_id_in_current_frame: list[uuid4]) -> uuid4:
             cropped_face: ndarray = ImageEditor.crop(frame, face.prediction.bounding_box)
+            cropped_face_features: ndarray = self.face_comparator.get_features(cropped_face)
             if self._is_persons_empty():
-                return self._add_person(face, cropped_face, face.prediction.confidence)
+                return self._add_person(face, cropped_face, face.prediction.confidence, cropped_face_features)
             else:
                 for person in self.persons:
                     if not person.id in persons_id_in_current_frame:
-                        comparison: Comparison = self.compare_faces(cropped_face, person.cropped_face)
+                        comparison: Comparison = self.compare_features(cropped_face_features, person.cropped_face_features)
                         if comparison.is_same_person:
                             if self._is_confidence_higher(person, face):
-                                person.replace_cropped_face(cropped_face, face.prediction.confidence)
+                                person.replace_cropped_face(cropped_face, face.prediction.confidence, cropped_face_features)
                             person.add_face(face)
                             return person.id
-                return self._add_person(face, cropped_face, face.prediction.confidence)
+                return self._add_person(face, cropped_face, face.prediction.confidence, cropped_face_features)
 
-    def _add_person(self, face: Face, cropped_face: ndarray, cropped_face_confidence: float) -> uuid4:
-        new_person = Person(face, cropped_face, cropped_face_confidence)
+    def _add_person(self, face: Face, cropped_face: ndarray, cropped_face_confidence: float, cropped_face_features: ndarray) -> uuid4:
+        new_person = Person(face, cropped_face, cropped_face_confidence, cropped_face_features)
         self.persons.append(new_person)
         return new_person.id
 
@@ -68,8 +69,11 @@ class PersonManager:
     def _is_confidence_higher(self, person: Person, face: Face) -> bool:
         return person.cropped_face_confidence < face.prediction.confidence
 
-    def compare_faces(self, target_face: ndarray, known_face: ndarray) -> Comparison:
-        return self.face_comparator.compare(known_face, target_face)
+    def compare_faces(self, target_face: ndarray, known_face: ndarray, known_face_is_feature: bool = False) -> Comparison:
+        return self.face_comparator.compare(known_face, target_face, known_face_is_feature)
+    
+    def compare_features(self, target_face_features: ndarray, known_face_features: ndarray) -> Comparison:
+        return self.face_comparator.compare_features(known_face_features, target_face_features)
 
     def _is_persons_empty(self) -> bool:
         return len(self.persons) == 0

@@ -1,4 +1,4 @@
-from cv2 import imread, resize, cvtColor, COLOR_BGR2RGB
+from cv2 import resize
 import numpy as np
 import logging
 import torch
@@ -18,23 +18,31 @@ class VGGFaceComparator(Model, FaceComparator):
         self.warm_up()
 
     def warm_up(self) -> None:
-        empty_image = np.zeros((224, 224, 3))
+        empty_image = np.ones((224, 224, 3))
         self.compare(empty_image, empty_image)
         logging.info("PyTorch VGGFaceComparator warmed up.")
         
-    def compare(self, known_face: np.ndarray, target_face: np.ndarray) -> Comparison:
-        with torch.no_grad():
-            known_face = self.image_preprocess(known_face)
-            target_face = self.image_preprocess(target_face)
-            known_face_features = self.model(known_face)
-            target_face_features = self.model(target_face)
-            known_face_features = known_face_features[0].cpu().numpy()
-            target_face_features = target_face_features[0].cpu().numpy()
+    def compare(self, target_face: np.ndarray,  known_face: np.ndarray, known_face_is_feature: bool = False) -> Comparison:
+        target_face_features = self.get_features(target_face)
+        if known_face_is_feature:
+            known_face_features = known_face
+        else:
+            known_face_features = self.get_features(known_face)
 
-            distance: float = self._findCosineDistance(known_face_features, target_face_features)
-            is_same_person: bool = self._is_same_person(distance=distance)
-            return Comparison(is_same_person, distance)
-        
+        return self.compare_features(target_face_features, known_face_features)
+    
+    def compare_features(self, target_face_features: np.ndarray, known_face_features: np.ndarray) -> Comparison:
+        distance: float = self._findCosineDistance(known_face_features, target_face_features)
+        is_same_person: bool = self._is_same_person(distance)
+        return Comparison(is_same_person, distance)
+
+    def get_features(self, face: np.ndarray) -> np.ndarray:
+        face = self.image_preprocess(face)
+        with torch.no_grad():
+            face_features = self.model(face)
+            face_features = face_features[0].cpu().numpy()
+            return face_features        
+
     def image_preprocess(self, img: np.ndarray) -> torch.Tensor:
         image = resize(img, (224, 224))
         image = np.array(image).astype('float32')

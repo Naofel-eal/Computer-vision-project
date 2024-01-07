@@ -5,11 +5,12 @@ from uuid import uuid4
 
 class Person:
     
-    def __init__(self, face: Face, cropped_face: ndarray, cropped_face_confidence: float):
+    def __init__(self, face: Face, cropped_face: ndarray, cropped_face_confidence: float, cropped_face_features: ndarray = None):
         self.id = uuid4()
         self.faces: list[Face] = [face]
         self.cropped_face: ndarray = cropped_face
         self.cropped_face_confidence: float = cropped_face_confidence
+        self.cropped_face_features: ndarray = cropped_face_features
         
     def get_frames_indexes(self) -> list[int]:
         return [face.frame_index for face in self.faces]
@@ -35,9 +36,10 @@ class Person:
                 self.faces.remove(current_face)
                 break
 
-    def replace_cropped_face(self, cropped_face: ndarray, cropped_face_confidence: float) -> None:
+    def replace_cropped_face(self, cropped_face: ndarray, cropped_face_confidence: float, cropped_face_features) -> None:
         self.cropped_face = cropped_face
         self.cropped_face_confidence = cropped_face_confidence
+        self.cropped_face_features = cropped_face_features
 
     def __str__(self) -> str:
         return f"Person n°{self.id} has {len(self.faces)} faces"

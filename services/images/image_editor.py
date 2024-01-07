@@ -27,7 +27,7 @@ class ImageEditor:
             x1 = max(0, int(bounding_box.upper_left.x - width * 0.15))
             x2 = min(frame.shape[1], int(bounding_box.bottom_right.x + width * 0.15))
             cropped_image = ascontiguousarray(frame[y1:y2, x1:x2])
-            blur_lvl = int(blur_lvl) * 10 + 1
+            blur_lvl = int(blur_lvl + 3) * 10 + 1
             blur_cropped_image = GaussianBlur(cropped_image, (blur_lvl, blur_lvl), 0)
             frame[y1:y2, x1:x2] = blur_cropped_image
             return frame
