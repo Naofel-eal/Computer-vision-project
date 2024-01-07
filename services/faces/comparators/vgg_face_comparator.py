@@ -19,7 +19,8 @@ class VGGFaceComparator(Model, FaceComparator):
 
     def warm_up(self) -> None:
         empty_image = np.ones((224, 224, 3))
-        self.compare(empty_image, empty_image)
+        empty_image = self.image_preprocess(empty_image)
+        self.model(empty_image)
         logging.info("PyTorch VGGFaceComparator warmed up.")
         
     def compare(self, target_face: np.ndarray,  known_face: np.ndarray, known_face_is_feature: bool = False) -> Comparison:
