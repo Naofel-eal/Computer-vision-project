@@ -1,12 +1,15 @@
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
 
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/Naofel-eal/Computer-vision-project/blob/main/resources/logo.png">
-    <img src="resources/logo.png" alt="Logo" width="80" height="80">
+    <img src="resources/logo.png" alt="Logo" width="120">
   </a>
 
-  <h3 align="center">Blur AI: Anonymize Person Faces with Advanced AI</h3>
+  <h1 align="center">Blur AI: Anonymize Person Faces with Advanced AI</h3>
 
   <p align="center">
     An awesome README template to jumpstart your projects!
