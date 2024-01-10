@@ -1,5 +1,25 @@
+<div align="center">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Contributors">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Forks">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Stargazers">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Issues">
+</div>
 
-# Blur AI: Anonymize Person Faces with Advanced AI
+<br />
+<div align="center">
+  <a href="https://github.com/Naofel-eal/Computer-vision-project/blob/main/resources/logo.png">
+    <img src="resources/logo.png" alt="Logo" width="120">
+  </a>
+
+  <h1 align="center">Blur AI: Anonymize Person Faces with Advanced AI</h1>
+</div>
+
+## Authors
+<div align="center">
+<h4>
+<a href="https://github.com/a-coutarel">COUTAREL Allan</a> - <a href="https://github.com/Naofel-eal">EL ALOUANI Naofel</a>
+</h4>
+</div>
 
 ## Project Overview
 Blur AI is an innovative Python application designed to enhance privacy by anonymizing faces in photos and videos. Utilizing a custom-trained YOLOv8n model for face detection and the VGG-Face neural network for face recognition, this tool seamlessly identifies and processes faces in various media forms.
