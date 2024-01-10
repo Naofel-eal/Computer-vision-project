@@ -1,7 +1,7 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
+[![Contributors][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][contributors-url]
+[![Forks][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][forks-url]
+[![Stargazers][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][stars-url]
+[![Issues][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][issues-url]
 
 <br />
 <div align="center">
@@ -61,3 +61,10 @@ Below is the UML diagram illustrating the architecture of Blur AI. Note that min
 
 ### User Interface
 - Sleek and intuitive GUI for ease of use.
+
+[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
+[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
+[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[linkedin-url]: https://linkedin.com/in/othneildrew
