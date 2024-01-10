@@ -35,7 +35,7 @@ Blur AI is an innovative Python application designed to enhance privacy by anony
 - [VGG Face Descriptor](https://www.robots.ox.ac.uk/~vgg/software/vgg_face/) used by our VGG-Face neural network to compare faces.
 
 ## Demonstration
-
+[Demo](./resources/demo.gif)
 
 ## Installation
 Note that the application will be really faster if you have a GPU with CUDA installed.
