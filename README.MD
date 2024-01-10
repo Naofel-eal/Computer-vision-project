@@ -1,7 +1,9 @@
-[![Contributors][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][https://github.com/naofel-eal/Computer-vision-project/graphs/contributors]
-[![Forks][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][https://github.com/naofel-eal/Computer-vision-project/network/members]
-[![Stargazers][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][https://github.com/naofel-eal/Computer-vision-project/stargazers]
-[![Issues][https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge]][https://github.com/naofel-eal/Computer-vision-project/issues]
+<div align="center">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Contributors">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Forks">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Stargazers">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Issues">
+</div>
 
 <br />
 <div align="center">
@@ -9,11 +11,14 @@
     <img src="resources/logo.png" alt="Logo" width="120">
   </a>
 
-  <h1 align="center">Blur AI: Anonymize Person Faces with Advanced AI</h3>
+  <h1 align="center">Blur AI: Anonymize Person Faces with Advanced AI</h1>
+</div>
 
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-  </p>
+## Authors
+<div align="center">
+<h4>
+<a href="https://github.com/a-coutarel">COUTAREL Allan</a> - <a href="https://github.com/Naofel-eal">EL ALOUANI Naofel</a>
+</h4>
 </div>
 
 ## Project Overview
