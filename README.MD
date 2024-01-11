@@ -1,8 +1,8 @@
 <div align="center">
-    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Contributors">
-    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Forks">
-    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Stargazers">
-    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Issues">
+    <img src="https://img.shields.io/github/contributors/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Contributors">
+    <img src="https://img.shields.io/github/forks/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Forks">
+    <img src="https://img.shields.io/github/stars/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Stars">
+    <img src="https://img.shields.io/github/issues/naofel-eal/Computer-vision-project.svg?style=for-the-badge" alt="Issues">
 </div>
 
 <br />
