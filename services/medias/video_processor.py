@@ -42,11 +42,11 @@ class VideoProcessor(MediaProcessor):
                 current_cropped_face_features = self.person_manager.face_comparator.get_features(current_croped_face)
                 for other_person_index, other_person in enumerate(self.person_manager.persons):
                     if current_person_index != other_person_index:
-                        other_person_face_features = other_person.cropped_face_features
+                        other_person_face_features = other_person.reference_face.cropped_face_features
                         comparison: Comparison = self.person_manager.compare_features(current_cropped_face_features, other_person_face_features)
                         other_person_distance = comparison.distance
                         if comparison.is_same_person:
-                            current_person_distance: float = self.person_manager.compare_features(current_cropped_face_features, current_person.cropped_face_features).distance
+                            current_person_distance: float = self.person_manager.compare_features(current_cropped_face_features, current_person.reference_face.cropped_face_features).distance
                             if other_person_distance < current_person_distance:
                                 other_person.add_face(current_face)
                                 current_person.remove_face(current_face)

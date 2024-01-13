@@ -37,10 +37,10 @@ class PersonManager:
             else:
                 for person in self.persons:
                     if not person.id in persons_id_in_current_frame:
-                        comparison: Comparison = self.compare_features(cropped_face_features, person.cropped_face_features)
+                        comparison: Comparison = self.compare_features(cropped_face_features, person.reference_face.cropped_face_features)
                         if comparison.is_same_person:
                             if self._is_confidence_higher(person, face):
-                                person.replace_cropped_face(cropped_face, face.prediction.confidence, cropped_face_features)
+                                person.replace_reference_face(cropped_face, face.prediction.confidence, cropped_face_features)
                             person.add_face(face)
                             return person.id
                 return self._add_person(face, cropped_face, face.prediction.confidence, cropped_face_features)
@@ -55,19 +55,19 @@ class PersonManager:
         for current_person_index, current_person in enumerate(self.persons):
             for other_person_index, other_person in enumerate(self.persons):
                 if current_person_index != other_person_index:
-                    comparison: Comparison = self.compare_faces(current_person.cropped_face, other_person.cropped_face)
+                    comparison: Comparison = self.compare_faces(current_person.reference_face.cropped_face, other_person.reference_face.cropped_face)
                     if comparison.is_same_person:
                         gr.Info(f"Grouping persons {current_person_index + 1}/{len(self.persons)} and {other_person_index + 1}/{len(self.persons)}")
                         self._merge_persons(current_person, other_person)
     
     def _merge_persons(self, current_person: Person, other_person: Person) -> None:
-        person_with_better_confidence = current_person if current_person.cropped_face_confidence > other_person.cropped_face_confidence else other_person
-        person_with_worst_confidence = current_person if current_person.cropped_face_confidence < other_person.cropped_face_confidence else other_person
+        person_with_better_confidence = current_person if current_person.reference_face.cropped_face_confidence > other_person.reference_face.cropped_face_confidence else other_person
+        person_with_worst_confidence = current_person if current_person.reference_face.cropped_face_confidence < other_person.reference_face.cropped_face_confidence else other_person
         person_with_better_confidence.add_faces(person_with_worst_confidence.faces)
         self.persons.remove(person_with_worst_confidence)
 
     def _is_confidence_higher(self, person: Person, face: Face) -> bool:
-        return person.cropped_face_confidence < face.prediction.confidence
+        return person.reference_face.cropped_face_confidence < face.prediction.confidence
 
     def compare_faces(self, target_face: ndarray, known_face: ndarray, known_face_is_feature: bool = False) -> Comparison:
         return self.face_comparator.compare(known_face, target_face, known_face_is_feature)
