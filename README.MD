@@ -34,6 +34,10 @@ Blur AI is an innovative Python application designed to enhance privacy by anony
 - [Face Detection Dataset](https://www.kaggle.com/datasets/fareselmenshawii/face-detection-dataset/data) used by our YOLOv8n model to detect faces.
 - [VGG Face Descriptor](https://www.robots.ox.ac.uk/~vgg/software/vgg_face/) used by our VGG-Face neural network to compare faces.
 
+### Report
+- [Report](./resources/project_report_fr.pdf) (French version)
+- [Report](./resources/project_report_en.pdf) (English version)
+
 ## Demonstration
 ![Demo](./resources/demo.gif)
 
